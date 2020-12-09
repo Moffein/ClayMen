@@ -144,7 +144,7 @@ namespace ClayMen
         }
 
         private void ModifyClayMan()
-        {
+        { 
             
             AISkillDriver clayPrimary = cm.GetComponent<AISkillDriver>();
             clayPrimary.maxDistance = 16f;
