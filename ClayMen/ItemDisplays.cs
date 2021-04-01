@@ -73,7 +73,7 @@ namespace ClayMen
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
                             followerPrefab = poisonPrefab,
                             childName = "Head",
-                            localPos = new Vector3(0f, 0.3f, 0f),
+                            localPos = new Vector3(0f, 0.4f, 0f),
                             localAngles = new Vector3(255f, 0f, 0f),
                             localScale = 0.07f * Vector3.one,
                             limbMask = LimbFlags.None

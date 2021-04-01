@@ -7,41 +7,38 @@ using System.Collections.Generic;
 using RoR2.CharacterAI;
 using R2API.Utils;
 using BepInEx.Configuration;
+using EntityStates.Treebot.UnlockInteractable;
 
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.2.1")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.1")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
     {
-        private static ConfigEntry<int> spawnCost;
         private GameObject cm, clayObject;
         public static Transform headTransform;
+        ContentPack content;
 
         public void Start()
         {
             EntityStates.ClaymanMonster.SwipeForward.attackString = "Play_merc_sword_swing";
             EntityStates.ClaymanMonster.SwipeForward.selfForceMagnitude = 1800f;
             EntityStates.ClaymanMonster.SwipeForward.baseDuration = 1f;
+            EntityStates.ClaymanMonster.SwipeForward.damageCoefficient = 1.4f;
             EntityStates.ClaymanMonster.Leap.verticalJumpSpeed = 20f;
-            EntityStates.ClaymanMonster.Leap.horizontalJumpSpeedCoefficient = 2.4f;
+            EntityStates.ClaymanMonster.Leap.horizontalJumpSpeedCoefficient = 2.3f;
             EntityStates.ClaymanMonster.SpawnState.duration = 3.2f;
         }
         public void Awake()
         {
+            content = new ContentPack();
+            On.RoR2.ContentManager.SetContentPacks += AddContent;
             clayObject = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
-            BodyCatalog.getAdditionalEntries += delegate (List<GameObject> list)
-            {
-                list.Add(clayObject);
-            };
+            content.bodyPrefabs = new GameObject[] { clayObject };
             cm = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
-            MasterCatalog.getAdditionalEntries += delegate (List<GameObject> list)
-            {
-                list.Add(cm);
-            };
-            spawnCost = base.Config.Bind<int>(new ConfigDefinition("General Settings", "01 - Spawn Cost"), 15, new ConfigDescription("How many director credits Clay Men take to spawn."));
+            content.masterPrefabs = new GameObject[] { cm };
 
             CharacterSpawnCard beetleCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscBeetle");
             //CharacterSpawnCard clayBossCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscClayBoss");
@@ -57,7 +54,7 @@ namespace ClayMen
             clayManCSC.nodeGraphType = MapNodeGroup.GraphType.Ground;
             clayManCSC.requiredFlags = NodeFlags.None;
             clayManCSC.forbiddenFlags = NodeFlags.NoCharacterSpawn;
-            clayManCSC.directorCreditCost = spawnCost.Value;
+            clayManCSC.directorCreditCost = 16;
             clayManCSC.occupyPosition = false;
             clayManCSC.loadout = new SerializableLoadout();
             clayManCSC.noElites = false;
@@ -70,8 +67,6 @@ namespace ClayMen
                 allowAmbushSpawn = true,
                 preventOverhead = false,
                 minimumStageCompletions = 0,
-                requiredUnlockable = "",
-                forbiddenUnlockable = "",
                 spawnDistance = DirectorCore.MonsterSpawnDistance.Close
             };
             DirectorAPI.DirectorCardHolder clayManCard = new DirectorAPI.DirectorCardHolder
@@ -81,6 +76,7 @@ namespace ClayMen
                 InteractableCategory = DirectorAPI.InteractableCategory.None
             };
 
+            //This causes errors
             /*DirectorAPI.FamilyActions += delegate (List<DirectorAPI.MonsterFamilyHolder> list, DirectorAPI.StageInfo stage)
             {
                 foreach (DirectorAPI.MonsterFamilyHolder holder in list)
@@ -107,6 +103,13 @@ namespace ClayMen
                     case DirectorAPI.Stage.VoidCell:
                     case DirectorAPI.Stage.AbandonedAqueduct:
                     case DirectorAPI.Stage.RallypointDelta:
+                        foreach (DirectorAPI.DirectorCardHolder dc in list)
+                        {
+                            if (dc.Card.spawnCard == beetleCSC)
+                            {
+                                dc.Card.selectionWeight = 1;
+                            }
+                        }
                         addClayMan = true;
                         break;
                     case DirectorAPI.Stage.ScorchedAcres:
@@ -139,8 +142,13 @@ namespace ClayMen
             On.EntityStates.ClaymanMonster.SpawnState.OnEnter += (orig, self) =>
             {
                 orig(self);
-                Util.PlayScaledSound("Play_clayBruiser_attack2_shoot", self.outer.gameObject, 1f);
+                Util.PlayAttackSpeedSound("Play_clayBruiser_attack2_shoot", self.outer.gameObject, 1f);
             };
+        }
+        private void AddContent(On.RoR2.ContentManager.orig_SetContentPacks orig, List<ContentPack> newContentPacks)
+        {
+            newContentPacks.Add(content);
+            orig(newContentPacks);
         }
 
         private void ModifyClayMan()
@@ -152,7 +160,7 @@ namespace ClayMen
 
             LanguageAPI.Add("CLAY_BODY_NAME", "Clay Man");
 
-            LanguageAPI.Add("CLAY_BODY_LORE", "<style=cMono>\r\n$ Transcribing image... done.\r\n$ Resolving... done.\r\n$ Outputting text strings... done.\r\nComplete!\r\n</style>\r\n\r\nField Notes:  Quick with his sword and quicker with his feet; the agility of these clay 'people' is unexpected with a form so roughly shaped.\n\nWhen faced with one of the few creatures here which I feel some humanity in, my aloneness closes in. Why do they have clay pots on their heads? Could it be protection from this cruel reality, or maybe just to hide the scars from this brutal planet.");
+            LanguageAPI.Add("CLAY_BODY_LORE", "<style=cMono>\r\n$ Transcribing image... done.\r\n$ Resolving... done.\r\n$ Outputting text strings... done.\r\nComplete!\r\n</style>\r\n\r\nQuick with his sword and quicker with his feet; the agility of these clay 'people' is unexpected with a form so roughly shaped.\n\nWhen faced with one of the few creatures here which I feel some humanity in, my aloneness closes in. Why do they have clay pots on their heads? Could it be protection from this cruel reality, or maybe just to hide the scars from this brutal planet.");
             clayObject.AddComponent<Interactor>().maxInteractionDistance = 3f;
             clayObject.AddComponent<InteractionDriver>();
 
@@ -167,18 +175,19 @@ namespace ClayMen
             CharacterBody clayCB = clayObject.GetComponent<CharacterBody>();
             clayCB.baseNameToken = "CLAY_BODY_NAME";
             clayCB.baseJumpPower = 22f;
-            clayCB.baseMaxHealth = 170f;
+            clayCB.baseMaxHealth = 160f;
             clayCB.levelMaxHealth = clayCB.baseMaxHealth*0.3f;
             clayCB.baseArmor = 0f;
-            clayCB.baseDamage = 12f; //14 -> 12
+            clayCB.baseDamage = 12f;
             clayCB.levelDamage = clayCB.baseDamage*0.2f;
             clayCB.baseMoveSpeed = 9f;
             clayCB.baseRegen = 0f;
             clayCB.levelRegen = 0f;
             clayCB.bodyFlags = CharacterBody.BodyFlags.ImmuneToGoo;
 
-            Debug.Log(clayCB.GetComponent<DeathRewards>().logUnlockableName);
-            clayCB.GetComponent<DeathRewards>().logUnlockableName = "Logs.ClayBody.0";
+            //Debug.Log(clayCB.GetComponent<DeathRewards>().logUnlockableName);
+            /*UnlockableDef clayLog = ScriptableObject.CreateInstance<UnlockableDef>();
+            clayCB.GetComponent<DeathRewards>().logUnlockableDef = clayLog;*/
 
             SetStateOnHurt claySSoH = clayObject.AddComponent<SetStateOnHurt>();
             claySSoH.canBeFrozen = true;
