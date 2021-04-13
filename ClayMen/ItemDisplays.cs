@@ -11,7 +11,8 @@ namespace ClayMen
 {
     class ItemDisplays
     {
-        public static List<ItemDisplayRuleSet.NamedRuleGroup> equipmentList;
+        private static Dictionary<string, GameObject> itemDisplayPrefabs = new Dictionary<string, GameObject>();
+        public static List<ItemDisplayRuleSet.KeyAssetRuleGroup> equipmentList;
         public static Transform headTransform;
         public static void DisplayRules(GameObject clayObject)
         {
@@ -23,47 +24,14 @@ namespace ClayMen
                 transform = headTransform
             };
 
-            ItemDisplayRuleSet idrsCommando = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody").GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>().itemDisplayRuleSet;
-            ItemDisplayRuleSet.NamedRuleGroup[] ersCommando = idrsCommando.GetFieldValue<ItemDisplayRuleSet.NamedRuleGroup[]>("namedEquipmentRuleGroups");
-            GameObject bluePrefab = null;
-            GameObject redPrefab = null;
-            GameObject whitePrefab = null;
-            GameObject poisonPrefab = null;
-            GameObject ghostPrefab = null;
-            for (int i = 0; i < ersCommando.Length; i++)
-            {
-                if (ersCommando[i].name == "AffixPoison")
-                {
-                    poisonPrefab = ersCommando[i].displayRuleGroup.rules[0].followerPrefab;
-                }
-                else if (ersCommando[i].name == "AffixHaunted")
-                {
-                    ghostPrefab = ersCommando[i].displayRuleGroup.rules[0].followerPrefab;
-                }
-                else if (ersCommando[i].name == "AffixBlue")
-                {
-                    bluePrefab = ersCommando[i].displayRuleGroup.rules[0].followerPrefab;
-                }
-                else if (ersCommando[i].name == "AffixRed")
-                {
-                    redPrefab = ersCommando[i].displayRuleGroup.rules[0].followerPrefab;
-                }
-                else if (ersCommando[i].name == "AffixWhite")
-                {
-                    whitePrefab = ersCommando[i].displayRuleGroup.rules[0].followerPrefab;
-                }
-                if (false)
-                {
-                    Debug.Log("\nChildname: " + ersCommando[i].displayRuleGroup.rules[0].childName + "\nScale: " + ersCommando[i].displayRuleGroup.rules[0].localScale + "\nAngles: " + ersCommando[i].displayRuleGroup.rules[0].localAngles + "\nPos: " + ersCommando[i].displayRuleGroup.rules[0].localPos + "\n\n");
-                }
-            }
+            PopulateDisplays();
 
             ItemDisplayRuleSet idrsClay = ScriptableObject.CreateInstance<ItemDisplayRuleSet>();
 
-            equipmentList = new List<ItemDisplayRuleSet.NamedRuleGroup>();
-            equipmentList.Add(new ItemDisplayRuleSet.NamedRuleGroup
+            equipmentList = new List<ItemDisplayRuleSet.KeyAssetRuleGroup>();
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
             {
-                name = "AffixPoison",
+                keyAsset = RoR2Content.Equipment.AffixPoison,
                 displayRuleGroup = new DisplayRuleGroup
                 {
                     rules = new ItemDisplayRule[]
@@ -71,7 +39,7 @@ namespace ClayMen
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = poisonPrefab,
+                            followerPrefab = LoadDisplay("DisplayEliteUrchinCrown"),
                             childName = "Head",
                             localPos = new Vector3(0f, 0.4f, 0f),
                             localAngles = new Vector3(255f, 0f, 0f),
@@ -82,9 +50,9 @@ namespace ClayMen
                 }
             });
 
-            equipmentList.Add(new ItemDisplayRuleSet.NamedRuleGroup
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
             {
-                name = "AffixHaunted",
+                keyAsset = RoR2Content.Equipment.AffixHaunted,
                 displayRuleGroup = new DisplayRuleGroup
                 {
                     rules = new ItemDisplayRule[]
@@ -92,7 +60,7 @@ namespace ClayMen
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = ghostPrefab,
+                            followerPrefab = LoadDisplay("DisplayEliteStealthCrown"),
                             childName = "Head",
                             localPos = new Vector3(0f, 0.3f, 0f),
                             localAngles = new Vector3(260f, 0f, 0f),
@@ -103,9 +71,9 @@ namespace ClayMen
                 }
             });
 
-            equipmentList.Add(new ItemDisplayRuleSet.NamedRuleGroup
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
             {
-                name = "AffixWhite",
+                keyAsset = RoR2Content.Equipment.AffixWhite,
                 displayRuleGroup = new DisplayRuleGroup
                 {
                     rules = new ItemDisplayRule[]
@@ -113,7 +81,7 @@ namespace ClayMen
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = whitePrefab,
+                            followerPrefab = LoadDisplay("DisplayEliteIceCrown"),
                             childName = "Head",
                             localPos = new Vector3(0f, 0.33f, -0.05f),
                             localAngles = new Vector3(260f, 0f, 0f),
@@ -124,9 +92,9 @@ namespace ClayMen
                 }
             });
 
-            equipmentList.Add(new ItemDisplayRuleSet.NamedRuleGroup
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
             {
-                name = "AffixBlue",
+                keyAsset = RoR2Content.Equipment.AffixBlue,
                 displayRuleGroup = new DisplayRuleGroup
                 {
                     rules = new ItemDisplayRule[]
@@ -134,7 +102,7 @@ namespace ClayMen
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = bluePrefab,
+                            followerPrefab = LoadDisplay("DisplayEliteRhinoHorn"),
                             childName = "Head",
                             localPos = new Vector3(0f, 0.28f, 0.1f),
                             localAngles = new Vector3(-20f, 0f, 0f),
@@ -144,7 +112,7 @@ namespace ClayMen
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = bluePrefab,
+                            followerPrefab = LoadDisplay("DisplayEliteRhinoHorn"),
                             childName = "Head",
                             localPos = new Vector3(0f, 0.21f, 0.1f),
                             localAngles = new Vector3(-10f, 0f, 0f),
@@ -155,9 +123,9 @@ namespace ClayMen
                 }
             });
 
-            equipmentList.Add(new ItemDisplayRuleSet.NamedRuleGroup
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
             {
-                name = "AffixRed",
+                keyAsset = RoR2Content.Equipment.AffixRed,
                 displayRuleGroup = new DisplayRuleGroup
                 {
                     rules = new ItemDisplayRule[]
@@ -165,7 +133,7 @@ namespace ClayMen
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = redPrefab,
+                            followerPrefab = LoadDisplay("DisplayEliteHorn"),
                             childName = "Head",
                             localPos = new Vector3(-0.1f, 0.25f,-0.1f),
                             localAngles = new Vector3(0f, 20f, 0f),
@@ -175,7 +143,7 @@ namespace ClayMen
                         new ItemDisplayRule
                         {
                             ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = redPrefab,
+                            followerPrefab = LoadDisplay("DisplayEliteHorn"),
                             childName = "Head",
                             localPos = new Vector3(0.1f, 0.25f, -0.1f),
                             localAngles = new Vector3(0f, -20f, 0f),
@@ -186,11 +154,47 @@ namespace ClayMen
                 }
             });
 
-            BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            ItemDisplayRuleSet.NamedRuleGroup[] equipmentArray = equipmentList.ToArray();
-            typeof(ItemDisplayRuleSet).GetField("namedEquipmentRuleGroups", bindingAttr).SetValue(idrsClay, equipmentArray);
+            idrsClay.keyAssetRuleGroups = equipmentList.ToArray();
+            CharacterModel characterModel = clayObject.GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>();
+            characterModel.itemDisplayRuleSet = idrsClay;
+            characterModel.itemDisplayRuleSet.GenerateRuntimeValues();
 
-            clayObject.GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>().itemDisplayRuleSet = idrsClay;
+            itemDisplayPrefabs.Clear();
+        }
+
+        internal static void PopulateDisplays()
+        {
+            ItemDisplayRuleSet itemDisplayRuleSet = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody").GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>().itemDisplayRuleSet;
+
+            ItemDisplayRuleSet.KeyAssetRuleGroup[] item = itemDisplayRuleSet.keyAssetRuleGroups;
+
+            for (int i = 0; i < item.Length; i++)
+            {
+                ItemDisplayRule[] rules = item[i].displayRuleGroup.rules;
+
+                for (int j = 0; j < rules.Length; j++)
+                {
+                    GameObject followerPrefab = rules[j].followerPrefab;
+                    if (followerPrefab)
+                    {
+                        string name = followerPrefab.name;
+                        string key = (name != null) ? name.ToLower() : null;
+                        if (!itemDisplayPrefabs.ContainsKey(key))
+                        {
+                            itemDisplayPrefabs[key] = followerPrefab;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static GameObject LoadDisplay(string name)
+        {
+            if (itemDisplayPrefabs.ContainsKey(name.ToLower()))
+            {
+                if (itemDisplayPrefabs[name.ToLower()]) return itemDisplayPrefabs[name.ToLower()];
+            }
+            return null;
         }
     }
 }

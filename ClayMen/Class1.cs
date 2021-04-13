@@ -8,37 +8,51 @@ using RoR2.CharacterAI;
 using R2API.Utils;
 using BepInEx.Configuration;
 using EntityStates.Treebot.UnlockInteractable;
+using System;
+using RoR2.ContentManagement;
+using System.Collections;
 
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.1")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.4")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
     {
-        private GameObject cm, clayObject;
+        public static GameObject clayMaster, clayObject;
         public static Transform headTransform;
-        ContentPack content;
 
         public void Start()
         {
-            EntityStates.ClaymanMonster.SwipeForward.attackString = "Play_merc_sword_swing";
-            EntityStates.ClaymanMonster.SwipeForward.selfForceMagnitude = 1800f;
-            EntityStates.ClaymanMonster.SwipeForward.baseDuration = 1f;
-            EntityStates.ClaymanMonster.SwipeForward.damageCoefficient = 1.4f;
-            EntityStates.ClaymanMonster.Leap.verticalJumpSpeed = 20f;
-            EntityStates.ClaymanMonster.Leap.horizontalJumpSpeedCoefficient = 2.3f;
-            EntityStates.ClaymanMonster.SpawnState.duration = 3.2f;
+            ItemDisplays.DisplayRules(clayObject);
         }
         public void Awake()
         {
-            content = new ContentPack();
-            On.RoR2.ContentManager.SetContentPacks += AddContent;
+            On.EntityStates.ClaymanMonster.SwipeForward.OnEnter += (orig, self) =>
+            {
+                EntityStates.ClaymanMonster.SwipeForward.attackString = "Play_merc_sword_swing";
+                EntityStates.ClaymanMonster.SwipeForward.selfForceMagnitude = 1800f;
+                EntityStates.ClaymanMonster.SwipeForward.baseDuration = 1f;
+                EntityStates.ClaymanMonster.SwipeForward.damageCoefficient = 1.4f;
+                orig(self);
+            };
+
+            On.EntityStates.ClaymanMonster.Leap.OnEnter += (orig, self) =>
+            {
+                EntityStates.ClaymanMonster.Leap.verticalJumpSpeed = 20f;
+                EntityStates.ClaymanMonster.Leap.horizontalJumpSpeedCoefficient = 2.3f;
+                orig(self);
+            };
+
+            On.EntityStates.ClaymanMonster.SpawnState.OnEnter += (orig, self) =>
+            {
+                EntityStates.ClaymanMonster.SpawnState.duration = 3.2f;
+                orig(self);
+            };
+
             clayObject = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
-            content.bodyPrefabs = new GameObject[] { clayObject };
-            cm = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
-            content.masterPrefabs = new GameObject[] { cm };
+            clayMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
 
             CharacterSpawnCard beetleCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscBeetle");
             //CharacterSpawnCard clayBossCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscClayBoss");
@@ -48,7 +62,7 @@ namespace ClayMen
 
             CharacterSpawnCard clayManCSC = ScriptableObject.CreateInstance<CharacterSpawnCard>();
             clayManCSC.name = "cscClayMan";
-            clayManCSC.prefab = cm;
+            clayManCSC.prefab = clayMaster;
             clayManCSC.sendOverNetwork = true;
             clayManCSC.hullSize = HullClassification.Human;
             clayManCSC.nodeGraphType = MapNodeGroup.GraphType.Ground;
@@ -144,23 +158,19 @@ namespace ClayMen
                 orig(self);
                 Util.PlayAttackSpeedSound("Play_clayBruiser_attack2_shoot", self.outer.gameObject, 1f);
             };
-        }
-        private void AddContent(On.RoR2.ContentManager.orig_SetContentPacks orig, List<ContentPack> newContentPacks)
-        {
-            newContentPacks.Add(content);
-            orig(newContentPacks);
+            ContentManager.collectContentPackProviders += ContentManager_collectContentPackProviders;
         }
 
         private void ModifyClayMan()
         { 
             
-            AISkillDriver clayPrimary = cm.GetComponent<AISkillDriver>();
+            AISkillDriver clayPrimary = clayMaster.GetComponent<AISkillDriver>();
             clayPrimary.maxDistance = 16f;
-            cm.GetComponent<CharacterMaster>().bodyPrefab = clayObject;
+            clayMaster.GetComponent<CharacterMaster>().bodyPrefab = clayObject;
 
             LanguageAPI.Add("CLAY_BODY_NAME", "Clay Man");
 
-            LanguageAPI.Add("CLAY_BODY_LORE", "<style=cMono>\r\n$ Transcribing image... done.\r\n$ Resolving... done.\r\n$ Outputting text strings... done.\r\nComplete!\r\n</style>\r\n\r\nQuick with his sword and quicker with his feet; the agility of these clay 'people' is unexpected with a form so roughly shaped.\n\nWhen faced with one of the few creatures here which I feel some humanity in, my aloneness closes in. Why do they have clay pots on their heads? Could it be protection from this cruel reality, or maybe just to hide the scars from this brutal planet.");
+            LanguageAPI.Add("CLAY_BODY_LORE", "Quick with his sword and quicker with his feet; the agility of these clay 'people' is unexpected with a form so roughly shaped.\n\nWhen faced with one of the few creatures here which I feel some humanity in, my aloneness closes in. Why do they have clay pots on their heads? Could it be protection from this cruel reality, or maybe just to hide the scars from this brutal planet.");
             clayObject.AddComponent<Interactor>().maxInteractionDistance = 3f;
             clayObject.AddComponent<InteractionDriver>();
 
@@ -295,6 +305,36 @@ namespace ClayMen
 
             EntityLocator clayLocator = clayObject.AddComponent<EntityLocator>();
             clayLocator.entity = clayObject;
+        }
+        private void ContentManager_collectContentPackProviders(ContentManager.AddContentPackProviderDelegate addContentPackProvider)
+        {
+            addContentPackProvider(new Content());
+        }
+    }
+
+    public class Content : IContentPackProvider
+    {
+        public static ContentPack content = new ContentPack();
+
+        public string identifier => "MoffeinClayMen.content";
+
+        public IEnumerator FinalizeAsync(FinalizeAsyncArgs args)
+        {
+            args.ReportProgress(1f);
+            yield break;
+        }
+
+        public IEnumerator GenerateContentPackAsync(GetContentPackAsyncArgs args)
+        {
+            ContentPack.Copy(content, args.output);
+            yield break;
+        }
+
+        public IEnumerator LoadStaticContentAsync(LoadStaticContentAsyncArgs args)
+        {
+            content.bodyPrefabs.Add(new GameObject[] { ClayMen.clayObject });
+            content.masterPrefabs.Add(new GameObject[] { ClayMen.clayMaster });
+            yield break;
         }
     }
 }
