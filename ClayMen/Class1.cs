@@ -11,11 +11,12 @@ using EntityStates.Treebot.UnlockInteractable;
 using System;
 using RoR2.ContentManagement;
 using System.Collections;
+using EntityStates;
 
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.4")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.6")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
@@ -185,10 +186,10 @@ namespace ClayMen
             CharacterBody clayCB = clayObject.GetComponent<CharacterBody>();
             clayCB.baseNameToken = "CLAY_BODY_NAME";
             clayCB.baseJumpPower = 22f;
-            clayCB.baseMaxHealth = 160f;
+            clayCB.baseMaxHealth = 140f;
             clayCB.levelMaxHealth = clayCB.baseMaxHealth*0.3f;
             clayCB.baseArmor = 0f;
-            clayCB.baseDamage = 12f;
+            clayCB.baseDamage = 11f;
             clayCB.levelDamage = clayCB.baseDamage*0.2f;
             clayCB.baseMoveSpeed = 9f;
             clayCB.baseRegen = 0f;
