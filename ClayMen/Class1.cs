@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using RoR2.CharacterAI;
 using R2API.Utils;
 using BepInEx.Configuration;
-using EntityStates.Treebot.UnlockInteractable;
 using System;
 using RoR2.ContentManagement;
 using System.Collections;
@@ -16,7 +15,7 @@ using EntityStates;
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.6")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.7")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
@@ -24,12 +23,31 @@ namespace ClayMen
         public static GameObject clayMaster, clayObject;
         public static Transform headTransform;
 
+        public static bool titanic, roost, aqueduct, wetland, rallypoint, scorched, abyss, sirens, stadia, meadow, voidfields, artifact;
+
+        public void ReadConfig()
+        {
+            titanic = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Titanic Plains"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            roost = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Distant Roost"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            aqueduct = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Abandoned Aqueduct"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            wetland = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Wetland Aspect"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            rallypoint = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Rallypoint Delta"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            scorched = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Scorched Acres"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            abyss = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Abyssal Depths"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            sirens = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sirens Call"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            stadia = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Stadia Jungle"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            meadow = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sky Meadow"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            voidfields = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Void Fields"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            artifact = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Bulwarks Ambry"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+        }
+
         public void Start()
         {
             ItemDisplays.DisplayRules(clayObject);
         }
         public void Awake()
         {
+            ReadConfig();
             On.EntityStates.ClaymanMonster.SwipeForward.OnEnter += (orig, self) =>
             {
                 EntityStates.ClaymanMonster.SwipeForward.attackString = "Play_merc_sword_swing";
@@ -112,33 +130,78 @@ namespace ClayMen
             DirectorAPI.MonsterActions += delegate (List<DirectorAPI.DirectorCardHolder> list, DirectorAPI.StageInfo stage)
             {
                 bool addClayMan = false;
+                bool removeBeetles = false;
                 switch (stage.stage)
                 {
                     case DirectorAPI.Stage.ArtifactReliquary:
-                    case DirectorAPI.Stage.VoidCell:
-                    case DirectorAPI.Stage.AbandonedAqueduct:
-                    case DirectorAPI.Stage.RallypointDelta:
-                        foreach (DirectorAPI.DirectorCardHolder dc in list)
+                        if (artifact)
                         {
-                            if (dc.Card.spawnCard == beetleCSC)
-                            {
-                                dc.Card.selectionWeight = 1;
-                            }
+                            addClayMan = true;
                         }
-                        addClayMan = true;
+                        break;
+                    case DirectorAPI.Stage.VoidCell:
+                        if (voidfields)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.TitanicPlains:
+                        if (titanic)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.DistantRoost:
+                        if (roost)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.WetlandAspect:
+                        if (wetland)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.AbandonedAqueduct:
+                        if (aqueduct)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.RallypointDelta:
+                        if (rallypoint)
+                        {
+                            addClayMan = true;
+                        }
                         break;
                     case DirectorAPI.Stage.ScorchedAcres:
-                        addClayMan = true;
-                        foreach (DirectorAPI.DirectorCardHolder dc in list)
+                        if (scorched)
                         {
-                            if (dc.Card.spawnCard == beetleCSC)
-                            {
-                                dc.Card.selectionWeight = 0;
-                            }
+                            addClayMan = true;
+                            removeBeetles = true;
                         }
                         break;
-                    case DirectorAPI.Stage.Custom:
-                        if (stage.CustomStageName == "rootjungle")
+                    case DirectorAPI.Stage.SunderedGrove:
+                        if (stadia)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.AbyssalDepths:
+                        if (abyss)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.SirensCall:
+                        if (sirens)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.SkyMeadow:
+                        if (meadow)
                         {
                             addClayMan = true;
                         }
@@ -151,6 +214,14 @@ namespace ClayMen
                     if (!list.Contains(clayManCard))
                     {
                         list.Add(clayManCard);
+                    }
+
+                    foreach (DirectorAPI.DirectorCardHolder dc in list)
+                    {
+                        if (dc.Card.spawnCard == beetleCSC)
+                        {
+                            dc.Card.selectionWeight = removeBeetles? 0 : 1;
+                        }
                     }
                 }
             };
@@ -177,7 +248,7 @@ namespace ClayMen
 
             ModelLocator clayModelLocator = clayObject.GetComponent<ModelLocator>();
             clayModelLocator.modelTransform.gameObject.layer = LayerIndex.entityPrecise.intVal;
-            clayModelLocator.modelTransform.localScale *= 1.2f;
+            clayModelLocator.modelTransform.localScale *= 1.4f;
             clayModelLocator.noCorpse = true;
 
             CharacterDeathBehavior clayCDB = clayObject.GetComponent<CharacterDeathBehavior>();
