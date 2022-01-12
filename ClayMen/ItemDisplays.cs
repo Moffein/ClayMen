@@ -137,7 +137,7 @@ namespace ClayMen
                             childName = "Head",
                             localPos = new Vector3(-0.1f, 0.25f,-0.1f),
                             localAngles = new Vector3(0f, 20f, 0f),
-                            localScale = 0.1f * Vector3.one,
+                            localScale =  new Vector3(-0.1f, 0.1f, 0.1f),
                             limbMask = LimbFlags.None
                         },
                         new ItemDisplayRule
@@ -147,7 +147,7 @@ namespace ClayMen
                             childName = "Head",
                             localPos = new Vector3(0.1f, 0.25f, -0.1f),
                             localAngles = new Vector3(0f, -20f, 0f),
-                            localScale = 0.1f * Vector3.one,
+                            localScale =  new Vector3(0.1f, 0.1f, 0.1f),
                             limbMask = LimbFlags.None
                         }
                     }

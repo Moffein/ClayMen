@@ -29,7 +29,7 @@ namespace ClayMen
             clayCB.baseMaxHealth = 140f;
             clayCB.levelMaxHealth = clayCB.baseMaxHealth * 0.3f;
             clayCB.baseArmor = 0f;
-            clayCB.baseDamage = 11f;
+            clayCB.baseDamage = 12f;
             clayCB.levelDamage = clayCB.baseDamage * 0.2f;
             clayCB.baseMoveSpeed = 9f;
             clayCB.baseRegen = 0f;
@@ -82,8 +82,14 @@ namespace ClayMen
 
             ItemDisplays.headTransform = clayHeadTransform;
 
+            //Tweak Sword Hitbox
             HurtBoxGroup clayHurtBoxGroup = modelLocator.modelTransform.gameObject.AddComponent<HurtBoxGroup>();
-            claySwordHitboxTransform.localScale *= 2.4f; //2.8 -> 2.4
+            claySwordHitboxTransform.localScale = new Vector3(1f, 3.4f, 1.6f);  //X is vertical range
+
+            //Move swing visual to match it
+            ChildLocator cl = modelLocator.modelTransform.GetComponent<ChildLocator>();
+            Transform swingCenter = cl.FindChild("SwingCenter");
+            swingCenter.localPosition += new Vector3(0f, 0.7f, 1.8f);
 
             #region chest
             clayTransform.gameObject.layer = LayerIndex.entityPrecise.intVal;

@@ -18,7 +18,7 @@ namespace ClayMen
 
             CharacterSpawnCard clayManCSC = ScriptableObject.CreateInstance<CharacterSpawnCard>();
             clayManCSC.name = "cscClayMan";
-            clayManCSC.prefab = ClayMen.clayMaster;
+            clayManCSC.prefab = Content.ClayManMaster;
             clayManCSC.sendOverNetwork = true;
             clayManCSC.hullSize = HullClassification.Human;
             clayManCSC.nodeGraphType = MapNodeGroup.GraphType.Ground;

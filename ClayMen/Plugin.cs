@@ -16,11 +16,10 @@ namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.8")]
-    [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]
+    [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(DamageAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
     {
-        public static GameObject clayMaster, clayObject;
         public static Transform headTransform;
 
         public static bool titanic, roost, aqueduct, wetland, rallypoint, scorched, abyss, sirens, stadia, meadow, voidfields, artifact;
@@ -54,16 +53,11 @@ namespace ClayMen
 
         public void Start()
         {
-            ItemDisplays.DisplayRules(clayObject);
+            ItemDisplays.DisplayRules(Content.ClayManObject);
         }
 
         private void SetEntityStateFieldValues()
         {
-            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "attackString", "Play_merc_sword_swing");
-            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "selfForceMagnitude", "1800");
-            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "baseDuration", "1");
-            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "damageCoefficient", "1.4");
-
             SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.Leap", "verticalJumpSpeed", "20");
             SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.Leap", "horizontalJumpSpeedCoefficient", "2.3");
 
@@ -74,23 +68,50 @@ namespace ClayMen
         {
             ReadConfig();
 
-            clayObject = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
-            clayMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
+            Content.ClayGooClayMan = DamageAPI.ReserveDamageType();
+            Content.ClayManObject = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
+            Content.ClayManMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
 
             SetEntityStateFieldValues();
-            Prefab.Modify(clayObject);
+            Prefab.Modify(Content.ClayManObject);
             ModifyAI();
-            ItemDisplays.DisplayRules(clayObject);
+
+            ItemDisplays.DisplayRules(Content.ClayManObject);
             Director.Setup();
+            ModifySkills(Content.ClayManObject);
+            SetupDamageTypes();
 
             ContentManager.collectContentPackProviders += ContentManager_collectContentPackProviders;
         }
 
+        private void SetupDamageTypes()
+        {
+            On.RoR2.HealthComponent.TakeDamage += (orig, self, damageInfo) =>
+            {
+                orig(self, damageInfo);
+                if (self.alive && !damageInfo.rejected)
+                {
+                    if (damageInfo.HasModdedDamageType(Content.ClayGooClayMan))
+                    {
+                        self.body.AddTimedBuff(RoR2Content.Buffs.ClayGoo.buffIndex, 0.5f);
+                    }
+                }
+            };
+        }
+
+        private void ModifySkills(GameObject bodyObject)
+        {
+            SkillLocator sk = bodyObject.GetComponent<SkillLocator>();
+            sk.primary.skillFamily.variants[0].skillDef.activationState = new SerializableEntityStateType(typeof(EntityStates.MoffeinClayMan.SwipeForwardTar));
+            sk.primary.skillFamily.variants[0].skillDef.isCombatSkill = true;
+            sk.primary.skillFamily.variants[0].skillDef.baseRechargeInterval = 1.4f;
+        }
+
         private void ModifyAI()
         {
-            AISkillDriver clayPrimary = clayMaster.GetComponent<AISkillDriver>();
-            clayPrimary.maxDistance = 16f;
-            clayMaster.GetComponent<CharacterMaster>().bodyPrefab = clayObject;
+            AISkillDriver clayPrimary = Content.ClayManMaster.GetComponent<AISkillDriver>();
+            clayPrimary.maxDistance = 12f;
+            Content.ClayManMaster.GetComponent<CharacterMaster>().bodyPrefab = Content.ClayManObject;
         }
 
         private void ContentManager_collectContentPackProviders(ContentManager.AddContentPackProviderDelegate addContentPackProvider)
