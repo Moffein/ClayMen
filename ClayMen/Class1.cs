@@ -15,7 +15,7 @@ using EntityStates;
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.7")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.8")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
@@ -48,27 +48,15 @@ namespace ClayMen
         public void Awake()
         {
             ReadConfig();
-            On.EntityStates.ClaymanMonster.SwipeForward.OnEnter += (orig, self) =>
-            {
-                EntityStates.ClaymanMonster.SwipeForward.attackString = "Play_merc_sword_swing";
-                EntityStates.ClaymanMonster.SwipeForward.selfForceMagnitude = 1800f;
-                EntityStates.ClaymanMonster.SwipeForward.baseDuration = 1f;
-                EntityStates.ClaymanMonster.SwipeForward.damageCoefficient = 1.4f;
-                orig(self);
-            };
+            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "attackString", "Play_merc_sword_swing");
+            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "selfForceMagnitude", "1800");
+            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "baseDuration", "1");
+            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SwipeForward", "damageCoefficient", "1.4");
 
-            On.EntityStates.ClaymanMonster.Leap.OnEnter += (orig, self) =>
-            {
-                EntityStates.ClaymanMonster.Leap.verticalJumpSpeed = 20f;
-                EntityStates.ClaymanMonster.Leap.horizontalJumpSpeedCoefficient = 2.3f;
-                orig(self);
-            };
+            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.Leap", "verticalJumpSpeed", "20");
+            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.Leap", "horizontalJumpSpeedCoefficient", "2.3");
 
-            On.EntityStates.ClaymanMonster.SpawnState.OnEnter += (orig, self) =>
-            {
-                EntityStates.ClaymanMonster.SpawnState.duration = 3.2f;
-                orig(self);
-            };
+            SneedUtils.SneedUtils.SetEntityStateField("EntityStates.ClaymanMonster.SpawnState", "duration", "3.2");
 
             clayObject = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
             clayMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
@@ -87,7 +75,7 @@ namespace ClayMen
             clayManCSC.nodeGraphType = MapNodeGroup.GraphType.Ground;
             clayManCSC.requiredFlags = NodeFlags.None;
             clayManCSC.forbiddenFlags = NodeFlags.NoCharacterSpawn;
-            clayManCSC.directorCreditCost = 16;
+            clayManCSC.directorCreditCost = 28;
             clayManCSC.occupyPosition = false;
             clayManCSC.loadout = new SerializableLoadout();
             clayManCSC.noElites = false;
@@ -100,7 +88,7 @@ namespace ClayMen
                 allowAmbushSpawn = true,
                 preventOverhead = false,
                 minimumStageCompletions = 0,
-                spawnDistance = DirectorCore.MonsterSpawnDistance.Close
+                spawnDistance = DirectorCore.MonsterSpawnDistance.Standard
             };
             DirectorAPI.DirectorCardHolder clayManCard = new DirectorAPI.DirectorCardHolder
             {
@@ -274,8 +262,8 @@ namespace ClayMen
             SetStateOnHurt claySSoH = clayObject.AddComponent<SetStateOnHurt>();
             claySSoH.canBeFrozen = true;
             claySSoH.canBeStunned = true;
-            claySSoH.canBeHitStunned = false;
-            claySSoH.hitThreshold = 0.15f;
+            claySSoH.canBeHitStunned = true;
+            claySSoH.hitThreshold = 0.35f;
 
             SfxLocator claySFX = clayObject.GetComponent<SfxLocator>();
             claySFX.deathSound = "Play_clayboss_M1_explo";
