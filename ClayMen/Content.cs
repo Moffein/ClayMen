@@ -30,7 +30,7 @@ namespace ClayMen
 
         public IEnumerator LoadStaticContentAsync(LoadStaticContentAsyncArgs args)
         {
-            content.entityStateTypes.Add(new Type[] { typeof(EntityStates.MoffeinClayMan.SwipeForwardTar) });
+            content.entityStateTypes.Add(new Type[] { typeof(EntityStates.MoffeinClayMan.SwipeForwardTar), typeof(EntityStates.MoffeinClayMan.DeathState) });
             content.bodyPrefabs.Add(new GameObject[] { Content.ClayManObject });
             content.masterPrefabs.Add(new GameObject[] { Content.ClayManMaster });
             yield break;

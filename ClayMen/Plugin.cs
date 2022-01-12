@@ -93,7 +93,7 @@ namespace ClayMen
                 {
                     if (damageInfo.HasModdedDamageType(Content.ClayGooClayMan))
                     {
-                        self.body.AddTimedBuff(RoR2Content.Buffs.ClayGoo.buffIndex, 0.5f);
+                        self.body.AddTimedBuff(RoR2Content.Buffs.ClayGoo.buffIndex, 0.4f);
                     }
                 }
             };

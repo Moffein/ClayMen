@@ -21,7 +21,7 @@ namespace ClayMen
             clayModelLocator.noCorpse = true;
 
             CharacterDeathBehavior clayCDB = clayObject.GetComponent<CharacterDeathBehavior>();
-            clayCDB.deathState = Resources.Load<GameObject>("prefabs/characterbodies/WispBody").GetComponent<CharacterDeathBehavior>().deathState;
+            clayCDB.deathState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.MoffeinClayMan.DeathState));
 
             CharacterBody clayCB = clayObject.GetComponent<CharacterBody>();
             clayCB.baseNameToken = "CLAY_BODY_NAME";
@@ -31,7 +31,7 @@ namespace ClayMen
             clayCB.baseArmor = 0f;
             clayCB.baseDamage = 12f;
             clayCB.levelDamage = clayCB.baseDamage * 0.2f;
-            clayCB.baseMoveSpeed = 9f;
+            clayCB.baseMoveSpeed = 8.4f;
             clayCB.baseRegen = 0f;
             clayCB.levelRegen = 0f;
             clayCB.bodyFlags = CharacterBody.BodyFlags.ImmuneToGoo;

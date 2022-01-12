@@ -79,7 +79,7 @@ namespace EntityStates.MoffeinClayMan
 
 		public static float selfForceMagnitude = 1600f;
 
-		public static GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/sawmerangimpact");
+		public static GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/squidturrethiteffect");
 
 		public static GameObject swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/claymanswordswing");
 
