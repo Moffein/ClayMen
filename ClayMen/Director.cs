@@ -14,6 +14,7 @@ namespace ClayMen
 
             CharacterSpawnCard beetleCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscBeetle");
             CharacterSpawnCard impCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscImp");
+            CharacterSpawnCard wispCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscLesserWisp");
             //CharacterSpawnCard clayBossCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscClayBoss");
 
             CharacterSpawnCard clayManCSC = ScriptableObject.CreateInstance<CharacterSpawnCard>();
@@ -51,6 +52,7 @@ namespace ClayMen
                 bool addClayMan = false;
                 bool removeBeetles = false;
                 bool removeImps = false;
+                bool removeWisps = false;
                 switch (stage.stage)
                 {
                     case DirectorAPI.Stage.ArtifactReliquary:
@@ -70,6 +72,7 @@ namespace ClayMen
                         {
                             addClayMan = true;
                             removeBeetles = ClayMen.titanicBeetles;
+                            removeWisps = ClayMen.titanicWisps;
                         }
                         break;
                     case DirectorAPI.Stage.DistantRoost:
@@ -77,6 +80,7 @@ namespace ClayMen
                         {
                             addClayMan = true;
                             removeBeetles = ClayMen.roostBeetles;
+                            removeWisps = ClayMen.roostWisps;
                         }
                         break;
                     case DirectorAPI.Stage.WetlandAspect:
@@ -84,6 +88,7 @@ namespace ClayMen
                         {
                             addClayMan = true;
                             removeBeetles = ClayMen.wetlandBeetles;
+                            removeWisps = ClayMen.wetlandWisps;
                         }
                         break;
                     case DirectorAPI.Stage.AbandonedAqueduct:
@@ -91,6 +96,7 @@ namespace ClayMen
                         {
                             addClayMan = true;
                             removeBeetles = ClayMen.aqueductBeetles;
+                            removeWisps = ClayMen.aqueductWisps;
                         }
                         break;
                     case DirectorAPI.Stage.RallypointDelta:
@@ -98,6 +104,7 @@ namespace ClayMen
                         {
                             addClayMan = true;
                             removeImps = ClayMen.rallypointImps;
+                            removeWisps = ClayMen.rallypointWisps;
                         }
                         break;
                     case DirectorAPI.Stage.ScorchedAcres:
@@ -106,6 +113,7 @@ namespace ClayMen
                             addClayMan = true;
                             removeImps = ClayMen.scorchedImps;
                             removeBeetles = ClayMen.scorchedBeetles;
+                            removeWisps = ClayMen.scorchedWisps;
                         }
                         break;
                     case DirectorAPI.Stage.SunderedGrove:
@@ -132,6 +140,7 @@ namespace ClayMen
                         if (ClayMen.meadow)
                         {
                             addClayMan = true;
+                            removeWisps = ClayMen.meadowWisps;
                         }
                         break;
                     default:
@@ -139,22 +148,25 @@ namespace ClayMen
                 }
                 if (addClayMan)
                 {
-                    if (!list.Contains(clayManCard))
-                    {
-                        list.Add(clayManCard);
-                    }
+                    if (!list.Contains(clayManCard)) list.Add(clayManCard);
+
+                    List<DirectorAPI.DirectorCardHolder> toRemove = new List<DirectorAPI.DirectorCardHolder>();
 
                     foreach (DirectorAPI.DirectorCardHolder dc in list)
                     {
-                        if (dc.Card.spawnCard == beetleCSC)
+                        if ((removeBeetles && dc.Card.spawnCard == beetleCSC)
+                        || (removeImps && dc.Card.spawnCard == impCSC)
+                        || (removeWisps && dc.Card.spawnCard == wispCSC))
                         {
-                            dc.Card.selectionWeight = removeBeetles ? 0 : 1;
-                        }
-                        else if (dc.Card.spawnCard == impCSC)
-                        {
-                            dc.Card.selectionWeight = removeImps ? 0 : 1;
+                            toRemove.Add(dc);
                         }
                     }
+
+                    foreach(DirectorAPI.DirectorCardHolder dc in toRemove)
+                    {
+                        list.Remove(dc);
+                    }
+                    toRemove.Clear();
                 }
             };
         }

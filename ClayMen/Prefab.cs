@@ -31,7 +31,7 @@ namespace ClayMen
             clayCB.baseArmor = 0f;
             clayCB.baseDamage = 12f;
             clayCB.levelDamage = clayCB.baseDamage * 0.2f;
-            clayCB.baseMoveSpeed = 8.4f;
+            clayCB.baseMoveSpeed = 9f;
             clayCB.baseRegen = 0f;
             clayCB.levelRegen = 0f;
             clayCB.bodyFlags = CharacterBody.BodyFlags.ImmuneToGoo;

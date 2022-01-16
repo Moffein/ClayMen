@@ -15,7 +15,7 @@ using EntityStates;
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.3.8")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.0")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(DamageAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
@@ -24,6 +24,7 @@ namespace ClayMen
 
         public static bool titanic, roost, aqueduct, wetland, rallypoint, scorched, abyss, sirens, stadia, meadow, voidfields, artifact;
         public static bool titanicBeetles, roostBeetles, wetlandBeetles, aqueductBeetles, scorchedBeetles, scorchedImps, rallypointImps, abyssImps, sirensBeetles;
+        public static bool titanicWisps, roostWisps, wetlandWisps, aqueductWisps, scorchedWisps, rallypointWisps, meadowWisps;
 
         public void ReadConfig()
         {
@@ -41,14 +42,29 @@ namespace ClayMen
             artifact = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Bulwarks Ambry"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
 
             titanicBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Titanic Plains - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
+            titanicWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Titanic Plains - Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
+
             roostBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Distant Roost - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
+            roostWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Distant Roost - Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
+
             wetlandBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Wetland Aspect - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
+            wetlandWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Wetland Aspect- Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
+
             aqueductBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Abandoned Aqueduct - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
+            aqueductWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Abandoned Aqueduct - Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
+
             scorchedBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
             scorchedImps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Imps"), true, new ConfigDescription("Remove Imps from this map if Clay Men are enabled.")).Value;
+            scorchedWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
+
             rallypointImps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Rallypoint Delta - Remove Imps"), false, new ConfigDescription("Remove Imps from this map if Clay Men are enabled.")).Value;
+            rallypointWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Rallypoint Delta - Remove Wisps"),true, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
+            
             abyssImps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Abyssal Depths - Remove Imps"), false, new ConfigDescription("Remove Imps from this map if Clay Men are enabled.")).Value;
+            
             sirensBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Abyssal Depths - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
+
+            meadowWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Sky Meadow - Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
         }
 
         public void Start()
@@ -93,7 +109,7 @@ namespace ClayMen
                 {
                     if (damageInfo.HasModdedDamageType(Content.ClayGooClayMan))
                     {
-                        self.body.AddTimedBuff(RoR2Content.Buffs.ClayGoo.buffIndex, 0.4f);
+                        self.body.AddTimedBuff(RoR2Content.Buffs.ClayGoo.buffIndex, 2f * damageInfo.procCoefficient);
                     }
                 }
             };
@@ -110,7 +126,7 @@ namespace ClayMen
         private void ModifyAI()
         {
             AISkillDriver clayPrimary = Content.ClayManMaster.GetComponent<AISkillDriver>();
-            clayPrimary.maxDistance = 12f;
+            clayPrimary.maxDistance = 9f;
             Content.ClayManMaster.GetComponent<CharacterMaster>().bodyPrefab = Content.ClayManObject;
         }
 
