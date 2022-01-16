@@ -73,7 +73,7 @@ namespace EntityStates.MoffeinClayMan
 
 		public static float baseDuration = 1f;
 
-		public static float damageCoefficient = 1.7f;
+		public static float damageCoefficient = 1.6f;
 
 		public static float forceMagnitude = 1000f;
 

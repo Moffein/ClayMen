@@ -46,6 +46,7 @@ namespace ClayMen
                 MonsterCategory = DirectorAPI.MonsterCategory.BasicMonsters,
                 InteractableCategory = DirectorAPI.InteractableCategory.None
             };
+            Content.ClayManCard = clayManCard;
 
             DirectorAPI.MonsterActions += delegate (List<DirectorAPI.DirectorCardHolder> list, DirectorAPI.StageInfo stage)
             {
@@ -71,24 +72,18 @@ namespace ClayMen
                         if (ClayMen.titanic)
                         {
                             addClayMan = true;
-                            removeBeetles = ClayMen.titanicBeetles;
-                            removeWisps = ClayMen.titanicWisps;
                         }
                         break;
                     case DirectorAPI.Stage.DistantRoost:
                         if (ClayMen.roost)
                         {
                             addClayMan = true;
-                            removeBeetles = ClayMen.roostBeetles;
-                            removeWisps = ClayMen.roostWisps;
                         }
                         break;
                     case DirectorAPI.Stage.WetlandAspect:
                         if (ClayMen.wetland)
                         {
                             addClayMan = true;
-                            removeBeetles = ClayMen.wetlandBeetles;
-                            removeWisps = ClayMen.wetlandWisps;
                         }
                         break;
                     case DirectorAPI.Stage.AbandonedAqueduct:
@@ -126,21 +121,18 @@ namespace ClayMen
                         if (ClayMen.abyss)
                         {
                             addClayMan = true;
-                            removeImps = ClayMen.abyssImps;
                         }
                         break;
                     case DirectorAPI.Stage.SirensCall:
                         if (ClayMen.sirens)
                         {
                             addClayMan = true;
-                            removeBeetles = ClayMen.sirensBeetles;
                         }
                         break;
                     case DirectorAPI.Stage.SkyMeadow:
                         if (ClayMen.meadow)
                         {
                             addClayMan = true;
-                            removeWisps = ClayMen.meadowWisps;
                         }
                         break;
                     default:
