@@ -30,6 +30,6 @@ namespace EntityStates.MoffeinClayMan
 			}
 		}
 
-		public static GameObject initialExplosion = Resources.Load<GameObject>("prefabs/effects/impacteffects/claypotprojectileexplosion");
+		public static GameObject initialExplosion = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/claypotprojectileexplosion");
 	}
 }

@@ -31,7 +31,7 @@ namespace ClayMen
             clayCB.baseArmor = 0f;
             clayCB.baseDamage = 12f;
             clayCB.levelDamage = clayCB.baseDamage * 0.2f;
-            clayCB.baseMoveSpeed = 9f;
+            clayCB.baseMoveSpeed = 10f;
             clayCB.baseRegen = 0f;
             clayCB.levelRegen = 0f;
             clayCB.bodyFlags = CharacterBody.BodyFlags.ImmuneToGoo;
@@ -94,9 +94,9 @@ namespace ClayMen
             #region chest
             clayTransform.gameObject.layer = LayerIndex.entityPrecise.intVal;
             CapsuleCollider clayCollider = clayTransform.gameObject.AddComponent<CapsuleCollider>();
-            clayCollider.center -= new Vector3(0, 0.6f, 0);
-            clayCollider.height *= 0.25f;
-            clayCollider.radius *= 1.16f;
+            clayCollider.center += new Vector3(0, -0.3f, 0);
+            clayCollider.height *= 1.5f;
+            clayCollider.radius *= 0.7f;
             HurtBox clayHurtBox = clayTransform.gameObject.AddComponent<HurtBox>();
             clayHurtBox.isBullseye = true;
             clayHurtBox.healthComponent = enemyObject.GetComponent<HealthComponent>();
@@ -107,19 +107,18 @@ namespace ClayMen
             #endregion
 
             #region head
-
-
             clayHeadTransform.gameObject.layer = LayerIndex.entityPrecise.intVal;
             CapsuleCollider clayHeadCollider = clayHeadTransform.gameObject.AddComponent<CapsuleCollider>();
-            clayHeadCollider.height *= 0.4f;
-            clayHeadCollider.radius *= 0.3f;
+            clayHeadCollider.height *= 0.7f;
+            clayHeadCollider.radius *= 0.5f;
             clayHeadCollider.center += new Vector3(0, 0.2f, 0);
             HurtBox clayHeadHurtBox = clayHeadTransform.gameObject.AddComponent<HurtBox>();
             clayHeadHurtBox.isBullseye = false;
             clayHeadHurtBox.healthComponent = enemyObject.GetComponent<HealthComponent>();
-            clayHeadHurtBox.damageModifier = HurtBox.DamageModifier.SniperTarget;
+            clayHeadHurtBox.damageModifier = HurtBox.DamageModifier.Normal;
             clayHeadHurtBox.hurtBoxGroup = clayHurtBoxGroup;
             clayHeadHurtBox.indexInGroup = 1;
+            clayHeadHurtBox.isSniperTarget = true;
             //clayHeadHurtBox.name = "HeadHurtbox";
 
             #endregion

@@ -12,10 +12,10 @@ namespace ClayMen
         {
 
 
-            CharacterSpawnCard beetleCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscBeetle");
-            CharacterSpawnCard impCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscImp");
-            CharacterSpawnCard wispCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscLesserWisp");
-            //CharacterSpawnCard clayBossCSC = Resources.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscClayBoss");
+            CharacterSpawnCard beetleCSC = LegacyResourcesAPI.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscBeetle");
+            CharacterSpawnCard impCSC = LegacyResourcesAPI.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscImp");
+            CharacterSpawnCard wispCSC = LegacyResourcesAPI.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscLesserWisp");
+            //CharacterSpawnCard clayBossCSC = LegacyResourcesAPI.Load<CharacterSpawnCard>("SpawnCards/CharacterSpawnCards/cscClayBoss");
 
             CharacterSpawnCard clayManCSC = ScriptableObject.CreateInstance<CharacterSpawnCard>();
             clayManCSC.name = "cscClayMan";
@@ -35,7 +35,6 @@ namespace ClayMen
             {
                 spawnCard = clayManCSC,
                 selectionWeight = 1,
-                allowAmbushSpawn = true,
                 preventOverhead = false,
                 minimumStageCompletions = 0,
                 spawnDistance = DirectorCore.MonsterSpawnDistance.Standard

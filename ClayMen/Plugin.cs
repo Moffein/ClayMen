@@ -16,7 +16,7 @@ namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.0")]
-    [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(DamageAPI))]
+    [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMen : BaseUnityPlugin
     {
@@ -68,9 +68,8 @@ namespace ClayMen
         {
             ReadConfig();
 
-            Content.ClayGooClayMan = DamageAPI.ReserveDamageType();
-            Content.ClayManObject = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
-            Content.ClayManMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
+            Content.ClayManObject = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
+            Content.ClayManMaster = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
 
             SetEntityStateFieldValues();
             Prefab.Modify(Content.ClayManObject);
@@ -79,13 +78,14 @@ namespace ClayMen
             ItemDisplays.DisplayRules(Content.ClayManObject);
             Director.Setup();
             ModifySkills(Content.ClayManObject);
-            SetupDamageTypes();
+            //SetupDamageTypes();
 
             ContentManager.collectContentPackProviders += ContentManager_collectContentPackProviders;
         }
 
-        private void SetupDamageTypes()
+        /*private void SetupDamageTypes()
         {
+            Content.ClayGooClayMan = DamageAPI.ReserveDamageType();
             On.RoR2.HealthComponent.TakeDamage += (orig, self, damageInfo) =>
             {
                 orig(self, damageInfo);
@@ -97,7 +97,7 @@ namespace ClayMen
                     }
                 }
             };
-        }
+        }*/
 
         private void ModifySkills(GameObject bodyObject)
         {
@@ -110,7 +110,7 @@ namespace ClayMen
         private void ModifyAI()
         {
             AISkillDriver clayPrimary = Content.ClayManMaster.GetComponent<AISkillDriver>();
-            clayPrimary.maxDistance = 9f;
+            clayPrimary.maxDistance = 12f;
             Content.ClayManMaster.GetComponent<CharacterMaster>().bodyPrefab = Content.ClayManObject;
         }
 

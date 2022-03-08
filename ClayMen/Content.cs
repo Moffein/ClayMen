@@ -12,7 +12,7 @@ namespace ClayMen
         public static ContentPack content = new ContentPack();
         public static GameObject ClayManObject;
         public static GameObject ClayManMaster;
-        public static DamageAPI.ModdedDamageType ClayGooClayMan;
+        //public static DamageAPI.ModdedDamageType ClayGooClayMan;
         public static DirectorAPI.DirectorCardHolder ClayManCard;
 
         public string identifier => "MoffeinClayMen.content";

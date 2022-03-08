@@ -22,7 +22,7 @@ namespace EntityStates.MoffeinClayMan
 			this.attack.hitEffectPrefab = SwipeForwardTar.hitEffectPrefab;
 			this.attack.isCrit = RollCrit();
 			this.attack.procCoefficient = 0.5f;
-			this.attack.AddModdedDamageType(ClayMen.Content.ClayGooClayMan);
+			//this.attack.AddModdedDamageType(ClayMen.Content.ClayGooClayMan);
 
 			Util.PlaySound(SwipeForwardTar.attackString, base.gameObject);
 			if (modelTransform)
@@ -79,9 +79,9 @@ namespace EntityStates.MoffeinClayMan
 
 		public static float selfForceMagnitude = 1600f;
 
-		public static GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/squidturrethiteffect");
+		public static GameObject hitEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/squidturrethiteffect");
 
-		public static GameObject swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/claymanswordswing");
+		public static GameObject swingEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/claymanswordswing");
 
 		public static string attackString = "Play_merc_sword_swing";
 
