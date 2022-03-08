@@ -47,119 +47,81 @@ namespace ClayMen
             };
             Content.ClayManCard = clayManCard;
 
-            DirectorAPI.MonsterActions += delegate (List<DirectorAPI.DirectorCardHolder> list, DirectorAPI.StageInfo stage)
+            if (ClayMen.artifact)
             {
-                bool addClayMan = false;
-                bool removeBeetles = false;
-                bool removeImps = false;
-                bool removeWisps = false;
-                switch (stage.stage)
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.ArtifactReliquary);
+            }
+            if (ClayMen.voidfields)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.VoidCell);
+            }
+
+            if (ClayMen.titanic)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.TitanicPlains);
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "itgolemplains");
+            }
+            if (ClayMen.roost)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.DistantRoost);
+            }
+            if (ClayMen.wetland)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.WetlandAspect);
+            }
+            if (ClayMen.aqueduct)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.AbandonedAqueduct);
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "itgoolake");
+            }
+            if (ClayMen.rallypoint)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.RallypointDelta);
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "itfrozenwall");
+            }
+            if (ClayMen.scorched)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.ScorchedAcres);
+                if (ClayMen.scorchedImps)
                 {
-                    case DirectorAPI.Stage.ArtifactReliquary:
-                        if (ClayMen.artifact)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.VoidCell:
-                        if (ClayMen.voidfields)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.TitanicPlains:
-                        if (ClayMen.titanic)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.DistantRoost:
-                        if (ClayMen.roost)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.WetlandAspect:
-                        if (ClayMen.wetland)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.AbandonedAqueduct:
-                        if (ClayMen.aqueduct)
-                        {
-                            addClayMan = true;
-                            removeBeetles = ClayMen.aqueductBeetles;
-                            removeWisps = ClayMen.aqueductWisps;
-                        }
-                        break;
-                    case DirectorAPI.Stage.RallypointDelta:
-                        if (ClayMen.rallypoint)
-                        {
-                            addClayMan = true;
-                            removeImps = ClayMen.rallypointImps;
-                            removeWisps = ClayMen.rallypointWisps;
-                        }
-                        break;
-                    case DirectorAPI.Stage.ScorchedAcres:
-                        if (ClayMen.scorched)
-                        {
-                            addClayMan = true;
-                            removeImps = ClayMen.scorchedImps;
-                            removeBeetles = ClayMen.scorchedBeetles;
-                            removeWisps = ClayMen.scorchedWisps;
-                        }
-                        break;
-                    case DirectorAPI.Stage.SunderedGrove:
-                        if (ClayMen.stadia)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.AbyssalDepths:
-                        if (ClayMen.abyss)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.SirensCall:
-                        if (ClayMen.sirens)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    case DirectorAPI.Stage.SkyMeadow:
-                        if (ClayMen.meadow)
-                        {
-                            addClayMan = true;
-                        }
-                        break;
-                    default:
-                        break;
+                    DirectorAPI.Helpers.RemoveExistingMonsterFromStage("cscImp", DirectorAPI.Stage.ScorchedAcres);
                 }
-                if (addClayMan)
+                if (ClayMen.scorchedBeetles)
                 {
-                    if (!list.Contains(clayManCard)) list.Add(clayManCard);
-
-                    List<DirectorAPI.DirectorCardHolder> toRemove = new List<DirectorAPI.DirectorCardHolder>();
-
-                    foreach (DirectorAPI.DirectorCardHolder dc in list)
-                    {
-                        if ((removeBeetles && dc.Card.spawnCard == beetleCSC)
-                        || (removeImps && dc.Card.spawnCard == impCSC)
-                        || (removeWisps && dc.Card.spawnCard == wispCSC))
-                        {
-                            toRemove.Add(dc);
-                        }
-                    }
-
-                    foreach(DirectorAPI.DirectorCardHolder dc in toRemove)
-                    {
-                        list.Remove(dc);
-                    }
-                    toRemove.Clear();
+                    DirectorAPI.Helpers.RemoveExistingMonsterFromStage("cscBeetle", DirectorAPI.Stage.ScorchedAcres);
                 }
-            };
+            }
+            if (ClayMen.stadia)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.SunderedGrove);
+            }
+            if (ClayMen.abyss)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.AbyssalDepths);
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "itdampcave");
+            }
+            if (ClayMen.sirens)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.SirensCall);
+            }
+            if (ClayMen.meadow)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.SkyMeadow);
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "itskymeadow");
+            }
+            if (ClayMen.snowyForest)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "snowyforest");
+            }
+            if (ClayMen.aphSanct)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "ancientloft");
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "itancientloft");
+            }
+            if (ClayMen.sulfur)
+            {
+                DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "sulfurpools");
+            }
         }
     }
 }

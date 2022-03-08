@@ -23,7 +23,9 @@ namespace ClayMen
         public static Transform headTransform;
 
         public static bool titanic, roost, aqueduct, wetland, rallypoint, scorched, abyss, sirens, stadia, meadow, voidfields, artifact;
-        public static bool aqueductBeetles, aqueductWisps, scorchedBeetles, scorchedImps, scorchedWisps, rallypointImps, rallypointWisps;
+        public static bool snowyForest, aphSanct, sulfur;
+
+        public static bool scorchedBeetles, scorchedImps;
 
         public void ReadConfig()
         {
@@ -32,23 +34,20 @@ namespace ClayMen
             aqueduct = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Abandoned Aqueduct"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
             wetland = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Wetland Aspect"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
             rallypoint = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Rallypoint Delta"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            scorched = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Scorched Acres"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            scorched = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Scorched Acres"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
             abyss = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Abyssal Depths"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
             sirens = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sirens Call"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            stadia = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Stadia Jungle"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            stadia = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Stadia Jungle"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
             meadow = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sky Meadow"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
             voidfields = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Void Fields"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
             artifact = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Bulwarks Ambry"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
-
-            aqueductBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Abandoned Aqueduct - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
-            aqueductWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Abandoned Aqueduct - Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
+            snowyForest = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Snowy Forest"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            aphSanct = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Aphelian Sanctuary"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            sulfur = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sulfur Pools"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
 
             scorchedBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
-            scorchedWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Wisps"), false, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
             scorchedImps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Imps"), true, new ConfigDescription("Remove Imps from this map if Clay Men are enabled.")).Value;
 
-            rallypointWisps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Rallypoint Delta - Remove Wisps"), true, new ConfigDescription("Remove Wisps from this map if Clay Men are enabled.")).Value;
-            rallypointImps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Rallypoint Delta - Remove Imps"), false, new ConfigDescription("Remove Imps from this map if Clay Men are enabled.")).Value;
         }
 
         public void Start()
