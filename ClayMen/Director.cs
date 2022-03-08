@@ -47,6 +47,9 @@ namespace ClayMen
             };
             Content.ClayManCard = clayManCard;
 
+            #region addcard
+
+
             if (ClayMen.artifact)
             {
                 DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.ArtifactReliquary);
@@ -122,6 +125,158 @@ namespace ClayMen
             {
                 DirectorAPI.Helpers.AddNewMonsterToStage(clayManCard.Card, clayManCard.MonsterCategory, DirectorAPI.Stage.Custom, "sulfurpools");
             }
+            #endregion
+
+            #region old
+            /*
+            DirectorAPI.MonsterActions += delegate (List<DirectorAPI.DirectorCardHolder> list, DirectorAPI.StageInfo stage)
+            {
+                bool addClayMan = false;
+                bool removeBeetles = false;
+                bool removeImps = false;
+                bool removeWisps = false;
+                switch (stage.stage)
+                {
+                    case DirectorAPI.Stage.ArtifactReliquary:
+                        if (ClayMen.artifact)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.VoidCell:
+                        if (ClayMen.voidfields)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.TitanicPlains:
+                        if (ClayMen.titanic)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.DistantRoost:
+                        if (ClayMen.roost)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.WetlandAspect:
+                        if (ClayMen.wetland)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.AbandonedAqueduct:
+                        if (ClayMen.aqueduct)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.RallypointDelta:
+                        if (ClayMen.rallypoint)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.ScorchedAcres:
+                        if (ClayMen.scorched)
+                        {
+                            addClayMan = true;
+                            removeImps = ClayMen.scorchedImps;
+                            removeBeetles = ClayMen.scorchedBeetles;
+                        }
+                        break;
+                    case DirectorAPI.Stage.SunderedGrove:
+                        if (ClayMen.stadia)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.AbyssalDepths:
+                        if (ClayMen.abyss)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.SirensCall:
+                        if (ClayMen.sirens)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    case DirectorAPI.Stage.SkyMeadow:
+                        if (ClayMen.meadow)
+                        {
+                            addClayMan = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                //Todo: Replace when R2API updates
+                if (!addClayMan)
+                {
+                    switch (stage.CustomStageName)
+                    {
+                        //Simulacrum
+                        case "itgolemplains":
+                            addClayMan = ClayMen.titanic;
+                            break;
+                        case "itdampcave":
+                            addClayMan = ClayMen.abyss;
+                            break;
+                        case "itancientloft":
+                            addClayMan = ClayMen.aphSanct;
+                            break;
+                        case "itfrozenwall":
+                            addClayMan = ClayMen.rallypoint;
+                            break;
+                        case "itgoolake":
+                            addClayMan = ClayMen.aqueduct;
+                            break;
+                        case "itskymeadow":
+                            addClayMan = ClayMen.meadow;
+                            break;
+
+                        //DLC1
+                        case "ancientloft":
+                            addClayMan = ClayMen.aphSanct;
+                            break;
+                        case "sulfurpools":
+                            addClayMan = ClayMen.sulfur;
+                            break;
+                        case "snowyforest":
+                            addClayMan = ClayMen.snowyForest;
+                            break;
+                    }
+                }
+
+                if (addClayMan)
+                {
+                    if (!list.Contains(clayManCard)) list.Add(clayManCard);
+
+                    List<DirectorAPI.DirectorCardHolder> toRemove = new List<DirectorAPI.DirectorCardHolder>();
+
+                    foreach (DirectorAPI.DirectorCardHolder dc in list)
+                    {
+                        if ((removeBeetles && dc.Card.spawnCard == beetleCSC)
+                        || (removeImps && dc.Card.spawnCard == impCSC)
+                        || (removeWisps && dc.Card.spawnCard == wispCSC))
+                        {
+                            toRemove.Add(dc);
+                        }
+                    }
+
+                    foreach(DirectorAPI.DirectorCardHolder dc in toRemove)
+                    {
+                        list.Remove(dc);
+                    }
+                    toRemove.Clear();
+                }
+            };*/
+            #endregion
         }
     }
 }
