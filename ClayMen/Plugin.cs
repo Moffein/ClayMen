@@ -11,6 +11,7 @@ using System;
 using RoR2.ContentManagement;
 using System.Collections;
 using EntityStates;
+using System.Linq;
 
 namespace ClayMen
 {
@@ -18,41 +19,38 @@ namespace ClayMen
     [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.0")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    public class ClayMen : BaseUnityPlugin
+    public class ClayMenPlugin : BaseUnityPlugin
     {
         public static Transform headTransform;
 
-        public static bool titanic, roost, aqueduct, wetland, rallypoint, scorched, abyss, sirens, stadia, meadow, voidfields, artifact;
-        public static bool snowyForest, aphSanct, sulfur;
+        public static List<StageSpawnInfo> StageList = new List<StageSpawnInfo>();
 
-        public static bool scorchedBeetles, scorchedImps;
+
+        public void LateSetup()
+        {
+            ItemDisplays.DisplayRules(ClayMenContent.ClayManObject);
+        }
 
         public void ReadConfig()
         {
-            titanic = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Titanic Plains"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            roost = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Distant Roost"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            aqueduct = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Abandoned Aqueduct"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            wetland = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Wetland Aspect"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            rallypoint = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Rallypoint Delta"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            scorched = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Scorched Acres"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            abyss = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Abyssal Depths"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            sirens = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sirens Call"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            stadia = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Stadia Jungle"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            meadow = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sky Meadow"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            voidfields = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Void Fields"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            artifact = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Bulwarks Ambry"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            snowyForest = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Snowy Forest"), false, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            aphSanct = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Aphelian Sanctuary"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
-            sulfur = base.Config.Bind<bool>(new ConfigDefinition("1 - Stage Settings", "Sulfur Pools"), true, new ConfigDescription("Enables Clay Men on this map.")).Value;
+            string stages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Stage List"), "snowyforest - 5, goolake, ancientloft, wispgraveyard, sulfurpools, arena, itgoolake, itancientloft", new ConfigDescription("What stages the monster will show up on. Add a '- #' after the stagename to make it only spawn after a certain amount of stages. List of stage names can be found at https://github.com/risk-of-thunder/R2Wiki/wiki/List-of-scene-names")).Value;
+            
+            //parse stage
+            stages = new string(stages.ToCharArray().Where(c => !System.Char.IsWhiteSpace(c)).ToArray());
+            string[] splitStages = stages.Split(',');
+            foreach (string str in splitStages)
+            {
+                string[] current = str.Split('-');
 
-            scorchedBeetles = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Beetles"), false, new ConfigDescription("Remove Beetles from this map if Clay Men are enabled.")).Value;
-            scorchedImps = base.Config.Bind<bool>(new ConfigDefinition("2 - Spawn Pool Settings", "Scorched Acres - Remove Imps"), true, new ConfigDescription("Remove Imps from this map if Clay Men are enabled.")).Value;
+                string name = current[0];
+                int minStages = 0;
+                if (current.Length == 2 && int.TryParse(current[1], out int num) && num > 0)
+                {
+                    minStages = num;
+                }
 
-        }
-
-        public void Start()
-        {
-            ItemDisplays.DisplayRules(Content.ClayManObject);
+                StageList.Add(new StageSpawnInfo(name, minStages));
+            }
         }
 
         private void SetEntityStateFieldValues()
@@ -67,16 +65,16 @@ namespace ClayMen
         {
             ReadConfig();
 
-            Content.ClayManObject = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
-            Content.ClayManMaster = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
+            ClayMenContent.ClayManObject = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);
+            ClayMenContent.ClayManMaster = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/charactermasters/ClaymanMaster"), "MoffeinClayManMaster", true);
 
             SetEntityStateFieldValues();
-            Prefab.Modify(Content.ClayManObject);
+            Prefab.Modify(ClayMenContent.ClayManObject);
             ModifyAI();
 
-            ItemDisplays.DisplayRules(Content.ClayManObject);
+            RoR2Application.onLoad += LateSetup;
             Director.Setup();
-            ModifySkills(Content.ClayManObject);
+            ModifySkills(ClayMenContent.ClayManObject);
             //SetupDamageTypes();
 
             ContentManager.collectContentPackProviders += ContentManager_collectContentPackProviders;
@@ -108,14 +106,28 @@ namespace ClayMen
 
         private void ModifyAI()
         {
-            AISkillDriver clayPrimary = Content.ClayManMaster.GetComponent<AISkillDriver>();
+            AISkillDriver clayPrimary = ClayMenContent.ClayManMaster.GetComponent<AISkillDriver>();
             clayPrimary.maxDistance = 12f;
-            Content.ClayManMaster.GetComponent<CharacterMaster>().bodyPrefab = Content.ClayManObject;
+            ClayMenContent.ClayManMaster.GetComponent<CharacterMaster>().bodyPrefab = ClayMenContent.ClayManObject;
         }
 
         private void ContentManager_collectContentPackProviders(ContentManager.AddContentPackProviderDelegate addContentPackProvider)
         {
-            addContentPackProvider(new Content());
+            addContentPackProvider(new ClayMenContent());
         }
+    }
+    public class StageSpawnInfo
+    {
+        private string stageName;
+        private int minStages;
+
+        public StageSpawnInfo(string stageName, int minStages)
+        {
+            this.stageName = stageName;
+            this.minStages = minStages;
+        }
+
+        public string GetStageName() { return stageName; }
+        public int GetMinStages() { return minStages; }
     }
 }

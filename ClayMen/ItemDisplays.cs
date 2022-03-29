@@ -154,6 +154,48 @@ namespace ClayMen
                 }
             });
 
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
+            {
+                keyAsset = DLC1Content.Elites.Earth.eliteEquipmentDef,
+                displayRuleGroup = new DisplayRuleGroup
+                {
+                    rules = new ItemDisplayRule[]
+                        {
+                            new ItemDisplayRule
+                            {
+                                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                                followerPrefab = LoadDisplay("DisplayEliteMendingAntlers"),
+                                childName = "Head",
+                                localPos = new Vector3(0f, 0.25f, 0f),
+                                localAngles = Vector3.zero,
+                                localScale = Vector3.one,
+                                limbMask = LimbFlags.None
+                            }
+                        }
+                }
+            });
+
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
+            {
+                keyAsset = DLC1Content.Elites.Void.eliteEquipmentDef,
+                displayRuleGroup = new DisplayRuleGroup
+                {
+                    rules = new ItemDisplayRule[]
+                        {
+                            new ItemDisplayRule
+                            {
+                                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                                followerPrefab = LoadDisplay("DisplayAffixVoid"),
+                                childName = "Head",
+                                localPos = new Vector3(0f, 0.14f, 0.15f),
+                                localAngles = new Vector3(90f, 0f, 0f),
+                                localScale = 0.2f * Vector3.one,
+                                limbMask = LimbFlags.None
+                            }
+                        }
+                }
+            });
+
             idrsClay.keyAssetRuleGroups = equipmentList.ToArray();
             CharacterModel characterModel = clayObject.GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>();
             characterModel.itemDisplayRuleSet = idrsClay;
