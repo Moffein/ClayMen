@@ -43,43 +43,39 @@ namespace ClayMen
             DirectorAPI.DirectorCardHolder clayManCard = new DirectorAPI.DirectorCardHolder
             {
                 Card = clayManDC,
-                MonsterCategory = DirectorAPI.MonsterCategory.BasicMonsters,
-                InteractableCategory = DirectorAPI.InteractableCategory.None
+                MonsterCategory = DirectorAPI.MonsterCategory.BasicMonsters
             };
+
+            DirectorCard clayManLoopDC = new DirectorCard
+            {
+                spawnCard = clayManCSC,
+                selectionWeight = 1,
+                preventOverhead = false,
+                minimumStageCompletions = 5,
+                spawnDistance = DirectorCore.MonsterSpawnDistance.Standard
+            };
+            DirectorAPI.DirectorCardHolder clayManLoopCard = new DirectorAPI.DirectorCardHolder
+            {
+                Card = clayManLoopDC,
+                MonsterCategory = DirectorAPI.MonsterCategory.BasicMonsters
+            };
+
             ClayMenContent.ClayManCard = clayManCard;
+            ClayMenContent.ClayManLoopCard = clayManLoopCard;
 
             DirectorCardCategorySelection dissonanceSpawns = Addressables.LoadAssetAsync<DirectorCardCategorySelection>("RoR2/Base/MixEnemy/dccsMixEnemy.asset").WaitForCompletion();
             dissonanceSpawns.AddCard(2, clayManDC);  //2 is BasicMonsters
-            
-            /*Debug.Log("\n\n\n\n\n\nDissonance Cards:");
-            foreach (DirectorCard dc in dissonanceSpawns.categories[2].cards)
-            {
-                Debug.Log(dc.spawnCard.name);
-            }*/
-            
 
-            DirectorAPI.MonsterActions += delegate (List<DirectorAPI.DirectorCardHolder> list, DirectorAPI.StageInfo stage)
-            {
-                if (!list.Contains(ClayMenContent.ClayManCard))
-                {
-                    bool shouldSpawn = false;
-                    int minStages = 0;
-                    foreach (StageSpawnInfo ssi in ClayMenPlugin.StageList)
-                    {
-                        if (ssi.GetStageName() == stage.CustomStageName)
-                        {
-                            shouldSpawn = true;
-                            minStages = ssi.GetMinStages();
-                            break;
-                        }
-                    }
 
-                    if (shouldSpawn && Run.instance.stageClearCount >= minStages)
-                    {
-                        list.Add(ClayMenContent.ClayManCard);
-                    }
-                }
-            };
+            foreach (StageSpawnInfo ssi in ClayMenPlugin.StageList)
+            {
+                DirectorAPI.DirectorCardHolder toAdd = ssi.GetMinStages() == 0 ? ClayMenContent.ClayManCard : ClayMenContent.ClayManLoopCard;
+
+                SceneDef sd = new SceneDef();
+                sd.baseSceneNameOverride = ssi.GetStageName();
+
+                DirectorAPI.Helpers.AddNewMonsterToStage(toAdd, false, DirectorAPI.GetStageEnumFromSceneDef(sd), ssi.GetStageName());
+            }
         }
     }
 }

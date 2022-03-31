@@ -33,7 +33,7 @@ namespace ClayMen
 
         public void ReadConfig()
         {
-            string stages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Stage List"), "snowyforest - 5, goolake, ancientloft, wispgraveyard, sulfurpools, arena, itgoolake, itancientloft", new ConfigDescription("What stages the monster will show up on. Add a '- #' after the stagename to make it only spawn after a certain amount of stages. List of stage names can be found at https://github.com/risk-of-thunder/R2Wiki/wiki/List-of-scene-names")).Value;
+            string stages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Stage List"), "snowyforest - loop, goolake, ancientloft, wispgraveyard, sulfurpools, arena, itgoolake, itancientloft", new ConfigDescription("What stages the monster will show up on. Add a '- loop' after the stagename to make it only spawn after looping. List of stage names can be found at https://github.com/risk-of-thunder/R2Wiki/wiki/List-of-scene-names")).Value;
             
             //parse stage
             stages = new string(stages.ToCharArray().Where(c => !System.Char.IsWhiteSpace(c)).ToArray());
@@ -44,9 +44,9 @@ namespace ClayMen
 
                 string name = current[0];
                 int minStages = 0;
-                if (current.Length == 2 && int.TryParse(current[1], out int num) && num > 0)
+                if (current.Length > 1)
                 {
-                    minStages = num;
+                    minStages = 5;
                 }
 
                 StageList.Add(new StageSpawnInfo(name, minStages));
