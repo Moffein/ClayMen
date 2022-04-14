@@ -16,7 +16,7 @@ using System.Linq;
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.1")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.2")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMenPlugin : BaseUnityPlugin
@@ -34,7 +34,8 @@ namespace ClayMen
         public void ReadConfig()
         {
             string stages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Stage List"), "snowyforest - loop, goolake, ancientloft, wispgraveyard, sulfurpools, arena, itgoolake, itancientloft", new ConfigDescription("What stages the monster will show up on. Add a '- loop' after the stagename to make it only spawn after looping. List of stage names can be found at https://github.com/risk-of-thunder/R2Wiki/wiki/List-of-scene-names")).Value;
-            
+            string impRemoveStages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Remove Imps"), "wispgraveyard", new ConfigDescription("Remove Imps from these stages to prevent role overlap.")).Value;
+
             //parse stage
             stages = new string(stages.ToCharArray().Where(c => !System.Char.IsWhiteSpace(c)).ToArray());
             string[] splitStages = stages.Split(',');
@@ -50,6 +51,21 @@ namespace ClayMen
                 }
 
                 StageList.Add(new StageSpawnInfo(name, minStages));
+            }
+
+            //parse removeImps
+            impRemoveStages = new string(impRemoveStages.ToCharArray().Where(c => !System.Char.IsWhiteSpace(c)).ToArray());
+            string[] splitimpRemoveStages = stages.Split(',');
+            foreach (string str in splitimpRemoveStages)
+            {
+                string[] current = str.Split('-');  //in case people try to use the Stage List format
+
+                string name = current[0];
+
+                SceneDef sd = new SceneDef();
+                sd.baseSceneNameOverride = name;
+
+                DirectorAPI.Helpers.RemoveExistingMonsterFromStage(DirectorAPI.Helpers.MonsterNames.Imp, DirectorAPI.GetStageEnumFromSceneDef(sd), name);
             }
         }
 
