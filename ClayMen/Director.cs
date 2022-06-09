@@ -71,7 +71,7 @@ namespace ClayMen
             {
                 DirectorAPI.DirectorCardHolder toAdd = ssi.GetMinStages() == 0 ? ClayMenContent.ClayManCard : ClayMenContent.ClayManLoopCard;
 
-                SceneDef sd = new SceneDef();
+                SceneDef sd = ScriptableObject.CreateInstance<SceneDef>();
                 sd.baseSceneNameOverride = ssi.GetStageName();
 
                 DirectorAPI.Helpers.AddNewMonsterToStage(toAdd, false, DirectorAPI.GetStageEnumFromSceneDef(sd), ssi.GetStageName());

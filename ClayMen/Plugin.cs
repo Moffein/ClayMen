@@ -16,7 +16,7 @@ using System.Linq;
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.2")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.3")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMenPlugin : BaseUnityPlugin
@@ -62,7 +62,7 @@ namespace ClayMen
 
                 string name = current[0];
 
-                SceneDef sd = new SceneDef();
+                SceneDef sd = ScriptableObject.CreateInstance<SceneDef>();
                 sd.baseSceneNameOverride = name;
 
                 DirectorAPI.Helpers.RemoveExistingMonsterFromStage(DirectorAPI.Helpers.MonsterNames.Imp, DirectorAPI.GetStageEnumFromSceneDef(sd), name);
