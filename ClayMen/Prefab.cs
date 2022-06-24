@@ -55,7 +55,6 @@ namespace ClayMen
 
         public static void FixHitbox(GameObject enemyObject, ModelLocator modelLocator)
         {
-            #region hitbox
             Component[] clayComponents = enemyObject.GetComponentsInChildren<Transform>();
             Transform clayTransform = null;
             Transform clayHeadTransform = null;
@@ -74,10 +73,11 @@ namespace ClayMen
                 {
                     claySwordHitboxTransform = t;
                 }
-                if (clayTransform != null && clayHeadTransform != null && claySwordHitboxTransform != null)
+                Debug.Log(t.name);
+                /*if (clayTransform != null && clayHeadTransform != null && claySwordHitboxTransform != null)
                 {
                     break;
-                }
+                }*/
             }
 
             ItemDisplays.headTransform = clayHeadTransform;
@@ -91,48 +91,55 @@ namespace ClayMen
             Transform swingCenter = cl.FindChild("SwingCenter");
             swingCenter.localPosition += new Vector3(0f, 0.7f, 1.8f);
 
+            //When DisableHurtboxes disables chest, it disables a lot of other things (Sword + Shield), which breaks Ghosts.
             #region chest
-            clayTransform.gameObject.layer = LayerIndex.entityPrecise.intVal;
+            /*clayTransform.gameObject.layer = LayerIndex.entityPrecise.intVal;
             CapsuleCollider clayCollider = clayTransform.gameObject.AddComponent<CapsuleCollider>();
-            clayCollider.center += new Vector3(0, -0.3f, 0);
-            clayCollider.height *= 1.5f;
-            clayCollider.radius *= 0.7f;
+            clayCollider.center = new Vector3(0, -0.3f, 0);
+            clayCollider.height = 1.5f;
+            clayCollider.radius = 0.35f;
+
+
             HurtBox clayHurtBox = clayTransform.gameObject.AddComponent<HurtBox>();
             clayHurtBox.isBullseye = true;
             clayHurtBox.healthComponent = enemyObject.GetComponent<HealthComponent>();
             clayHurtBox.damageModifier = HurtBox.DamageModifier.Normal;
             clayHurtBox.hurtBoxGroup = clayHurtBoxGroup;
             clayHurtBox.indexInGroup = 0;
-            //clayHurtBox.name = "ChestHurtbox";
+            //clayHurtBox.name = "ChestHurtbox";*/
             #endregion
 
             #region head
             clayHeadTransform.gameObject.layer = LayerIndex.entityPrecise.intVal;
             CapsuleCollider clayHeadCollider = clayHeadTransform.gameObject.AddComponent<CapsuleCollider>();
-            clayHeadCollider.height *= 0.7f;
-            clayHeadCollider.radius *= 0.5f;
-            clayHeadCollider.center += new Vector3(0, 0.2f, 0);
+
+            //Dimensions for containing the head only
+            /*clayHeadCollider.height = 0.7f;
+            clayHeadCollider.radius = 0.25f;
+            clayHeadCollider.center = new Vector3(0, 0.2f, 0);*/
+
+            //Dimensions for containing the entire body
+            clayHeadCollider.height = 2f;
+            clayHeadCollider.radius = 0.4f;
+            clayHeadCollider.center = new Vector3(0, -0.5f, 0);
+
             HurtBox clayHeadHurtBox = clayHeadTransform.gameObject.AddComponent<HurtBox>();
-            clayHeadHurtBox.isBullseye = false;
+            clayHeadHurtBox.isBullseye = true;
             clayHeadHurtBox.healthComponent = enemyObject.GetComponent<HealthComponent>();
             clayHeadHurtBox.damageModifier = HurtBox.DamageModifier.Normal;
             clayHeadHurtBox.hurtBoxGroup = clayHurtBoxGroup;
-            clayHeadHurtBox.indexInGroup = 1;
+            clayHeadHurtBox.indexInGroup = 0;
             clayHeadHurtBox.isSniperTarget = true;
             //clayHeadHurtBox.name = "HeadHurtbox";
-
             #endregion
 
             HurtBox[] clayHurtBoxArray = new HurtBox[]
             {
-                clayHurtBox, clayHeadHurtBox
+                clayHeadHurtBox
             };
 
-            clayHurtBoxGroup.bullseyeCount = 1;
+            clayHurtBoxGroup.mainHurtBox = clayHeadHurtBox;
             clayHurtBoxGroup.hurtBoxes = clayHurtBoxArray;
-            clayHurtBoxGroup.mainHurtBox = clayHurtBox;
-
-            #endregion
         }
 
         private static void AddSSoH(GameObject enemyObject)

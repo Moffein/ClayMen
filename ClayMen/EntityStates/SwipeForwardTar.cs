@@ -77,7 +77,7 @@ namespace EntityStates.MoffeinClayMan
 
 		public static float forceMagnitude = 1000f;
 
-		public static float selfForceMagnitude = 1600f;
+		public static float selfForceMagnitude = 1800f;
 
 		public static GameObject hitEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/squidturrethiteffect");
 

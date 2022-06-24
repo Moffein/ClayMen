@@ -16,7 +16,7 @@ using System.Linq;
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.3")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.4")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMenPlugin : BaseUnityPlugin
