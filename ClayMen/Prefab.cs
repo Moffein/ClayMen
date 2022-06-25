@@ -73,11 +73,10 @@ namespace ClayMen
                 {
                     claySwordHitboxTransform = t;
                 }
-                Debug.Log(t.name);
-                /*if (clayTransform != null && clayHeadTransform != null && claySwordHitboxTransform != null)
+                if (clayTransform != null && clayHeadTransform != null && claySwordHitboxTransform != null)
                 {
                     break;
-                }*/
+                }
             }
 
             ItemDisplays.headTransform = clayHeadTransform;
