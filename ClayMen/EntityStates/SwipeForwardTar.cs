@@ -49,10 +49,10 @@ namespace EntityStates.MoffeinClayMan
 				{
 					EffectManager.SimpleMuzzleFlash(SwipeForwardTar.swingEffectPrefab, base.gameObject, "SwingCenter", true);
 					HealthComponent healthComponent = base.characterBody.healthComponent;
-					CharacterDirection component = base.characterBody.GetComponent<CharacterDirection>();
+					CharacterDirection direction = base.characterDirection;
 					if (healthComponent)
 					{
-						healthComponent.TakeDamageForce(SwipeForwardTar.selfForceMagnitude * component.forward, true, false);
+						healthComponent.TakeDamageForce(SwipeForwardTar.selfForceMagnitude * direction.forward, true, false);
 					}
 					this.hasSlashed = true;
 				}

@@ -66,7 +66,6 @@ namespace ClayMen
             DirectorCardCategorySelection dissonanceSpawns = Addressables.LoadAssetAsync<DirectorCardCategorySelection>("RoR2/Base/MixEnemy/dccsMixEnemy.asset").WaitForCompletion();
             dissonanceSpawns.AddCard(2, clayManDC);  //2 is BasicMonsters
 
-
             foreach (StageSpawnInfo ssi in ClayMenPlugin.StageList)
             {
                 DirectorAPI.DirectorCardHolder toAdd = ssi.GetMinStages() == 0 ? ClayMenContent.ClayManCard : ClayMenContent.ClayManLoopCard;

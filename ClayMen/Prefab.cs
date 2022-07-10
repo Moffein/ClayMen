@@ -168,7 +168,7 @@ namespace ClayMen
             ssoh.hitThreshold = 0.35f;
             ssoh.targetStateMachine = body;
             ssoh.idleStateMachine = new EntityStateMachine[] { weapon };
-            ssoh.hurtState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.HurtStateFlyer));
+            ssoh.hurtState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.HurtState));
         }
     }
 }
