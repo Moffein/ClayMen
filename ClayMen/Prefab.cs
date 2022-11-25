@@ -46,6 +46,7 @@ namespace ClayMen
             DeathRewards dr = clayObject.GetComponent<DeathRewards>();
             ClayMenContent.ClayManLogbookUnlockable = ScriptableObject.CreateInstance<UnlockableDef>();
             ClayMenContent.ClayManLogbookUnlockable.nameToken = "UNLOCKABLE_LOG_MOFFEIN_CLAY_BODY";
+            ClayMenContent.ClayManLogbookUnlockable.cachedName = "MOFFEIN_CLAY_BODY_NAME";
             dr.logUnlockableDef = ClayMenContent.ClayManLogbookUnlockable;
 
             On.EntityStates.ClaymanMonster.SpawnState.OnEnter += (orig, self) =>
