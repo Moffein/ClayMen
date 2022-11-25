@@ -16,13 +16,13 @@ using System.Linq;
 namespace ClayMen
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.4.5")]
-    [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(LanguageAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.5.0")]
+    [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMenPlugin : BaseUnityPlugin
     {
         public static Transform headTransform;
-
+        public static PluginInfo pluginInfo;
         public static List<StageSpawnInfo> StageList = new List<StageSpawnInfo>();
 
 
@@ -79,6 +79,8 @@ namespace ClayMen
 
         public void Awake()
         {
+            pluginInfo = Info;
+            new LanguageTokens();
             ReadConfig();
 
             ClayMenContent.ClayManObject = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/ClayBody"), "MoffeinClayManBody", true);

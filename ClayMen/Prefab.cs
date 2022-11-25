@@ -9,9 +9,6 @@ namespace ClayMen
     {
         public static void Modify(GameObject clayObject)
         {
-            LanguageAPI.Add("CLAY_BODY_NAME", "Clay Man");
-
-            LanguageAPI.Add("CLAY_BODY_LORE", "Quick with his sword and quicker with his feet; the agility of these clay 'people' is unexpected with a form so roughly shaped.\n\nWhen faced with one of the few creatures here which I feel some humanity in, my aloneness closes in. Why do they have clay pots on their heads? Could it be protection from this cruel reality, or maybe just to hide the scars from this brutal planet.");
             clayObject.AddComponent<Interactor>().maxInteractionDistance = 3f;
             clayObject.AddComponent<InteractionDriver>();
 
@@ -24,7 +21,7 @@ namespace ClayMen
             clayCDB.deathState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.MoffeinClayMan.DeathState));
 
             CharacterBody clayCB = clayObject.GetComponent<CharacterBody>();
-            clayCB.baseNameToken = "CLAY_BODY_NAME";
+            clayCB.baseNameToken = "MOFFEIN_CLAY_BODY_NAME";
             clayCB.baseJumpPower = 22f;
             clayCB.baseMaxHealth = 140f;
             clayCB.levelMaxHealth = clayCB.baseMaxHealth * 0.3f;
