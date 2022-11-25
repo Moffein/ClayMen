@@ -25,7 +25,6 @@ namespace ClayMen
         public static PluginInfo pluginInfo;
         public static List<StageSpawnInfo> StageList = new List<StageSpawnInfo>();
 
-
         public void LateSetup()
         {
             ItemDisplays.DisplayRules(ClayMenContent.ClayManObject);
@@ -33,7 +32,7 @@ namespace ClayMen
 
         public void ReadConfig()
         {
-            string stages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Stage List"), "snowyforest - loop, goolake, ancientloft, wispgraveyard, sulfurpools, arena, itgoolake, itancientloft", new ConfigDescription("What stages the monster will show up on. Add a '- loop' after the stagename to make it only spawn after looping. List of stage names can be found at https://github.com/risk-of-thunder/R2Wiki/wiki/List-of-scene-names")).Value;
+            string stages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Stage List"), "goolake, ancientloft, wispgraveyard, sulfurpools, arena, itgoolake, itancientloft", new ConfigDescription("What stages the monster will show up on. Add a '- loop' after the stagename to make it only spawn after looping. List of stage names can be found at https://github.com/risk-of-thunder/R2Wiki/wiki/List-of-scene-names")).Value;
             string impRemoveStages = base.Config.Bind<string>(new ConfigDefinition("Spawns", "Remove Imps"), "wispgraveyard", new ConfigDescription("Remove Imps from these stages to prevent role overlap.")).Value;
 
             //parse stage
