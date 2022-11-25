@@ -37,7 +37,7 @@ namespace ClayMen
             content.entityStateTypes.Add(new Type[] { typeof(EntityStates.MoffeinClayMan.SwipeForwardTar), typeof(EntityStates.MoffeinClayMan.DeathState) });
             content.bodyPrefabs.Add(new GameObject[] { ClayMenContent.ClayManObject });
             content.masterPrefabs.Add(new GameObject[] { ClayMenContent.ClayManMaster });
-            content.unlockableDefs.Add(new UnlockableDef[] { ClayManLogbookUnlockable });
+            content.unlockableDefs.Add(new UnlockableDef[] { ClayMenContent.ClayManLogbookUnlockable });
             yield break;
         }
     }
