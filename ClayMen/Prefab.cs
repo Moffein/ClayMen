@@ -43,6 +43,11 @@ namespace ClayMen
             FixHitbox(clayObject, clayModelLocator);
             AddSSoH(clayObject);
 
+            DeathRewards dr = clayObject.GetComponent<DeathRewards>();
+            ClayMenContent.ClayManLogbookUnlockable = ScriptableObject.CreateInstance<UnlockableDef>();
+            ClayMenContent.ClayManLogbookUnlockable.nameToken = "UNLOCKABLE_LOG_MOFFEIN_CLAY_BODY";
+            dr.logUnlockableDef = ClayMenContent.ClayManLogbookUnlockable;
+
             On.EntityStates.ClaymanMonster.SpawnState.OnEnter += (orig, self) =>
             {
                 orig(self);
