@@ -196,6 +196,48 @@ namespace ClayMen
                 }
             });
 
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
+            {
+                keyAsset = DLC2Content.Elites.Aurelionite.eliteEquipmentDef,
+                displayRuleGroup = new DisplayRuleGroup
+                {
+                    rules = new ItemDisplayRule[]
+                        {
+                            new ItemDisplayRule
+                            {
+                                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                                followerPrefab = LoadDisplay("DisplayEliteAurelioniteEquipment"),
+                                childName = "Head",
+                                localPos = new Vector3(0F, 0.28F, 0.14F),
+                                localAngles = new Vector3(0F, 0F, 0F),
+                                localScale = new Vector3(0.4F, 0.4F, 0.4F),
+                                limbMask = LimbFlags.None
+                            }
+                        }
+                }
+            });
+
+            equipmentList.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
+            {
+                keyAsset = DLC2Content.Elites.Bead.eliteEquipmentDef,
+                displayRuleGroup = new DisplayRuleGroup
+                {
+                    rules = new ItemDisplayRule[]
+                        {
+                            new ItemDisplayRule
+                            {
+                                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                                followerPrefab = LoadDisplay("DisplayEliteBeadSpike"),
+                                childName = "Head",
+                                localPos = new Vector3(0F, 0.3F, -0.075F),
+                                localAngles = new Vector3(326F, 0F, 0F),
+                                localScale = new Vector3(0.025F, 0.025F, 0.025F),
+                                limbMask = LimbFlags.None
+                            }
+                        }
+                }
+            });
+
             idrsClay.keyAssetRuleGroups = equipmentList.ToArray();
             CharacterModel characterModel = clayObject.GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>();
             characterModel.itemDisplayRuleSet = idrsClay;
