@@ -21,7 +21,8 @@ namespace EntityStates.MoffeinClayMan
 			this.attack.damage = SwipeForwardTar.damageCoefficient * this.damageStat;
 			this.attack.hitEffectPrefab = SwipeForwardTar.hitEffectPrefab;
 			this.attack.isCrit = RollCrit();
-			this.attack.procCoefficient = 0.5f;
+			this.attack.procCoefficient = 1f;	//set to 0.5f if goo is enabled
+			this.attack.damageType.damageSource = DamageSource.Primary;
 			//this.attack.AddModdedDamageType(ClayMen.Content.ClayGooClayMan);
 
 			Util.PlaySound(SwipeForwardTar.attackString, base.gameObject);

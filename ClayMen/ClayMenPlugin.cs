@@ -18,7 +18,7 @@ namespace ClayMen
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency(R2API.PrefabAPI.PluginGUID)]
     [BepInDependency(R2API.DirectorAPI.PluginGUID)]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.5.8")]
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.5.9")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMenPlugin : BaseUnityPlugin
@@ -65,7 +65,6 @@ namespace ClayMen
 
                 SceneDef sd = ScriptableObject.CreateInstance<SceneDef>();
                 sd.baseSceneNameOverride = name;
-
                 DirectorAPI.Helpers.RemoveExistingMonsterFromStage(DirectorAPI.Helpers.MonsterNames.Imp, DirectorAPI.GetStageEnumFromSceneDef(sd), name);
             }
         }
