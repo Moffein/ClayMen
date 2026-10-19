@@ -18,8 +18,7 @@ namespace ClayMen
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency(R2API.PrefabAPI.PluginGUID)]
     [BepInDependency(R2API.DirectorAPI.PluginGUID)]
-    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.5.9")]
-    [R2API.Utils.R2APISubmoduleDependency(nameof(DirectorAPI), nameof(PrefabAPI))]//, nameof(DamageAPI)
+    [BepInPlugin("com.Moffein.ClayMen", "Clay Men", "1.5.10")]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class ClayMenPlugin : BaseUnityPlugin
     {
